@@ -6,8 +6,8 @@ import { PageContainer } from "@/components/layout/page-container"
 import { Section } from "@/components/layout/section"
 
 export const metadata: Metadata = {
-  title: "로그인 | Next.js Starter Kit",
-  description: "계정에 로그인하고 서비스를 이용해보세요.",
+  title: "로그인 | 노션 견적서 뷰어",
+  description: "노션 견적서 뷰어 관리자 계정으로 로그인하세요.",
 }
 
 export default function LoginPage() {

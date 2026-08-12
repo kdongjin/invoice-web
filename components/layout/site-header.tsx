@@ -12,7 +12,7 @@ export function SiteHeader() {
             href="/"
             className="text-sm font-semibold tracking-tight hover:opacity-80 transition-opacity"
           >
-            Next.js Starter Kit
+            노션 견적서 뷰어
           </Link>
           <div className="flex items-center gap-2">
             <Button variant="outline" size="sm" asChild>
