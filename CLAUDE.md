@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+**노션 견적서 뷰어**는 노션(Notion)에 입력한 견적서를 클라이언트가 로그인 없이 고유 링크로 웹에서 확인하고 PDF로 다운로드할 수 있게 하는 서비스입니다.
+
+📋 상세 요구사항은 @docs/PRD.md 참조
+
 @AGENTS.md
 
 ## Commands

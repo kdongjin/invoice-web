@@ -1,36 +1,107 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 노션 견적서 뷰어
 
-## Getting Started
+노션(Notion)에 입력한 견적서를 클라이언트가 로그인 없이 고유 링크로 웹에서 확인하고 PDF로 다운로드할 수 있게 하는 서비스입니다.
 
-First, run the development server:
+## 🎯 프로젝트 개요
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+**목적**: 노션을 유일한 데이터 입력 도구로 사용하는 프리랜서/소규모 사업자가 견적서를 클라이언트에게 브랜딩된 웹 페이지와 PDF 형태로 손쉽게 전달할 수 있도록 합니다.
+
+**범위**: MVP는 노션 동기화, 웹 조회, PDF 다운로드, 관리자 기본 인증, 공유 링크 발급까지만 포함합니다. 클라이언트 계정, 승인/코멘트, 다국어, 협업, 타 데이터소스 연동, 결제는 MVP 이후로 제외합니다.
+
+**사용자**:
+- **관리자**: 노션으로 견적서를 작성·관리하고, 로그인 후 노션 데이터를 동기화하며 클라이언트에게 전달할 공유 링크를 발급하는 프리랜서/소규모 사업자
+- **클라이언트**: 관리자에게 전달받은 공유 링크로 로그인 없이 견적서를 확인하고 PDF로 다운로드하는 사용자
+
+## 🚶 사용자 여정
+
+```
+1. 로그인 페이지 (관리자)
+   ↓ 이메일/비밀번호 로그인 (계정 없으면 회원가입 후 복귀)
+
+2. 견적서 목록 페이지 (관리자, 로그인 필요)
+   ↓ "노션에서 동기화" → 목록 갱신
+   ↓ "공유 링크 복사" → 외부 채널로 클라이언트에게 전달
+
+3. 견적서 상세 페이지 (클라이언트, 별도 진입)
+   ↓ 공유 링크로 직접 접속 (로그인 불필요)
+   ↓ 견적 항목·합계·유효기간 확인 후 "PDF 다운로드"
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📱 페이지 구조
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| 페이지 | 인증 | 관련 기능 | 설명 |
+|---|---|---|---|
+| 로그인 | 비로그인 | F010 | 관리자 이메일/비밀번호 로그인 |
+| 회원가입 | 비로그인 | F010 | 관리자 계정 생성 |
+| 견적서 목록 | 로그인 필요 | F001, F011 | 노션 동기화 실행, 견적서별 공유 링크 복사 |
+| 견적서 상세 | 불필요 (공유 링크 보유자만) | F002, F003 | 견적 항목/합계/유효기간 조회, PDF 다운로드 |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ⚡ 핵심 기능
 
-## Learn More
+| ID | 기능명 | 설명 |
+|---|---|---|
+| F001 | Notion 데이터 동기화 | 지정한 노션 데이터베이스에서 견적서 항목·금액·클라이언트명 등을 가져와 저장 |
+| F002 | 웹 견적서 조회 | 클라이언트가 공유 링크로 접속해 견적 항목·합계·유효기간을 웹에서 확인 |
+| F003 | PDF 다운로드 | 견적서 상세 페이지 내용을 PDF 파일로 즉시 다운로드 |
+| F010 | 기본 인증 | 관리자 회원가입/로그인/로그아웃 |
+| F011 | 공유 링크 발급 | 견적서별로 추측 불가능한 고유 링크를 생성하고 복사 |
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ 기술 스택
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 프론트엔드
+- **Next.js 16** (App Router, Turbopack)
+- **TypeScript 5.6+**
+- **React 19**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 스타일링 & UI
+- **TailwindCSS v4**
+- **shadcn/ui** (`radix-nova` 프리셋, `baseColor: neutral`)
+- **Lucide React** (아이콘)
 
-## Deploy on Vercel
+### 폼 & 검증
+- **React Hook Form 7.x**
+- **Zod**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### 데이터 연동 (예정)
+- **@notionhq/client** — 노션 공식 SDK, 견적서 데이터 소스 연동
+- **@react-pdf/renderer** — 견적서 상세 페이지를 PDF로 변환
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 백엔드 & 데이터베이스 (예정)
+- **Supabase** — 관리자 인증 및 Quote/QuoteItem 데이터 저장
+- **PostgreSQL** (Supabase 포함)
+
+### 배포
+- **Vercel**
+
+## 🚀 시작하기
+
+```bash
+# 의존성 설치
+npm install
+
+# 개발 서버 실행 (http://localhost:3000)
+npm run dev
+
+# 프로덕션 빌드
+npm run build
+
+# 프로덕션 서버 실행
+npm run start
+
+# 린트
+npm run lint
+
+# 타입 체크
+npx tsc --noEmit
+```
+
+## 📋 개발 상태
+
+- ✅ Next.js 16 + shadcn/ui 기반 프로젝트 초기화, 4계층 컴포넌트 구조 구성
+- ✅ 로그인 페이지 UI (`app/login/page.tsx`)
+- ⏳ Notion 연동, 견적서 목록/상세 페이지, PDF 다운로드, Supabase 인증 (예정)
+
+## 📖 문서
+
+- [PRD 문서](./docs/PRD.md) — 상세 요구사항
+- [개발 가이드](./CLAUDE.md) — 개발 지침 및 아키텍처 컨벤션
